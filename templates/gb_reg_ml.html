@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Makine Öğrenmesi ile PTF Tahmini</title>
+    <style>
+        h1 {
+            font-family: Arial, sans-serif;
+            font-size: 28px;
+            text-align: center;
+        }
+        .plot-container {
+            margin: 20px auto;
+            width: 100%;
+        }
+        #dates1,#dates2,#dates3,#dates4 {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            text-align: center;
+        }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <!--<h1>Makine Öğrenmesi ile PTF Tahmini</h1>-->
+    <div class="plot-container">
+        <div id="plot1"></div>
+        <div id="dates1"></div>
+    </div>
+    <script>
+        var PTFs = JSON.parse('{{ PTFs|escapejs }}');
+        var x = [];
+        var y = [];
+        for (var i = 0; i < PTFs.length; i++) {
+            x.push(i);
+            y.push(PTFs[i]);
+        }
+        var data = [{
+            x: x,
+            y: y,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'PTFs'
+        }];
+        var layout = {
+            title: 'Gradient Boosting',
+            xaxis: {
+                title: 'Zaman (saat)',
+                showgrid: false,
+                zeroline: false
+            },
+            yaxis: {
+                title: 'PTF Değeri',
+                showline: false
+            }
+        };
+        Plotly.newPlot('plot1', data, layout);
+        var today = new Date();
+        var tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        var todayStr = today.toLocaleDateString('tr-TR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'});
+        var tomorrowStr = tomorrow.toLocaleDateString('tr-TR', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'});
+        var datesText = 'Last Updated Date: ' + todayStr + ' | Predicted Date: ' + tomorrowStr;
+        document.getElementById('dates1').innerHTML = datesText;
+    </script>
+</body>
+</html>
+{% endblock %}

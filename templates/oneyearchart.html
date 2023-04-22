@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="col-lg-9">
+  <div class="flot-chart">
+    <div class="flot-chart-content" id="flot-line-chart"></div>
+  </div>
+</div>
+
+{% block scripts %}
+<script>
+var data = [];
+data.push({
+  data: {{ y_data|safe }},
+  label: 'My Data'
+});
+
+$.plot('#flot-line-chart', data, {
+  series: {
+    lines: {
+      show: true
+    }
+  }
+});
+</script>
+{% endblock %}
+{% endblock %}
